@@ -1,9 +1,8 @@
 ## SERC disease analysis workflow
 - I received two disease files from Calli Wise (SERC staff in CDE lab) that contained Dermo and bioeroder data for the MarineGEO project
 - Three years of data (2022, 2023, and 2024) were together in the first file. After the completion of the 2025 data collection (yay!) I was sent a follow-up file with the 2025 data.
-
-#### This file contains analysis steps in R that I followed to analyze the data, as well as my thoughts/workflow, which are also heavily annotated in the R scripts
-High-quality PDF versions of figures are often also generated (alongside png uploads in this .md file) and are stored in the /fig folder of this repo.
+- This file contains analysis steps in R that I followed to analyze the data, as well as my thoughts/workflow, which are also heavily annotated in the R scripts
+- High-quality PDFs of figures are often generated (alongside png uploads in this .md file) and are stored in the /fig folder of this repo.
 
 ### Step 1: Figure out what's present/absent in the data
 The first thing to do is figure out which rivers are represented in our data, and how many data points are available for each year. This will help me make decisions about what data to keep. 
