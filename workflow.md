@@ -115,5 +115,69 @@ The data format is pretty messy, I have columns with slightly different names ye
 - Another I notice is that the 2025 data has squashes, which we don't have from any other year.
 - I'm also going to want to combine some columns to make new variables for co-infections (Y/N or sum), infected with dermo only, infected with polydora only, and uninfected. we should add these once all column names are standardized.
 
-> [!NOTE]
-> I'm not sure what to do with the 2025 squash data right now - it could be cool to analyze and add into the bigger story, but because we don't have it for any other year, we can't use it in our first objectives. 
+Here's how I handled some of the initial data wrangling to get all of the columns to have the same names:
+
+```R
+### code chunk 2 ###
+data_2022 <- data_2022 %>% 
+  filter(River != "Rhode")
+data_2025 <- data_2025 %>% 
+  filter(River != "Rhode")
+
+# do some renaming for 2022 since the col names don't quite match - use 2023/2024 col names
+data_2022 <- data_2022 %>%
+  mutate(
+    Score_Rectum = DermoScore_Rectum,
+    Count_Rectum = DermoCellCount_Rectum,
+    Score_Mantle = DermoScore_Mantle,
+    Count_Mantle = DermoCellCount_Mantle,
+    Initials_BioEroder_A = Initials_BE_A,
+    Initials_BioEroder_B = Initials_BE_B,
+    # this dataset is weird because it only has A and B but not L/R valve so we will just duplicate everything across valves
+    Cliona_LeftValve_A = Cliona_A,
+    Cliona_RightValve_A = Cliona_A,
+    `Cliona_LeftValve_B_%` = Cliona_B,
+    `Cliona_RightValve_B_%` = Cliona_B,
+    Cliona_Avg_A = Cliona_A,
+    Cliona_Avg_B = Cliona_B,
+    `Polydora_LeftValve_B_%` = Polydora_LeftValve_B,
+    `Polydora_RightValve_B_%` = Polydora_RightValve_B
+  ) %>%
+  select(-DermoScore_Rectum, -DermoCellCount_Rectum, -DermoScore_Mantle, -DermoCellCount_Mantle,
+         -Initials_BE_A, -Initials_BE_B, -Cliona_A, -Cliona_B,
+         -Polydora_LeftValve_B, -Polydora_RightValve_B) # remove the old cols now to not get confused
+
+# 2024 needs to have the first column renamed
+data_2024 <- data_2024 %>%
+  rename(Specimen_ID = free)
+
+# i just standardized to the 2023/2024 data so just re-store 2023 here
+data_2023 <- data_2023
+
+# now just need to update a few columns in 2025
+data_2025 <- data_2025 %>%
+  mutate(
+    Score_Rectum = DermoScore_Rectum,
+    Count_Rectum = DermoCellCount_Rectum,
+    Score_Mantle = DermoScore_Mantle,
+    Count_Mantle = DermoCellCount_Mantle
+  ) %>%
+  select(-DermoScore_Rectum, -DermoCellCount_Rectum, 
+         -DermoScore_Mantle, -DermoCellCount_Mantle)
+
+# check
+colnames(data_2022)
+colnames(data_2023)
+colnames(data_2024)
+colnames(data_2025)
+# just a few small differences in notes but we will filter those out anyway
+```
+
+### Producing bioeroder averages
+I noticed that the 2023 data did not average the bioeroder data, so I will need to calculate those averages. During my column filtering above I also saw that the 2022 data has A and B data collectors but not L/R valves, so I duplicated the single value across valves. This will probably get averaged/fixed later anyway. Also one weird R syntax thing that I just learned is that if a variable ends with % you need to encase the variable name in ``. There are also some crazy symbols (e.g., >, ~) in the dataset, so I need to get rid of those with clean_num as as.numeric. 
+
+
+
+
+
+
