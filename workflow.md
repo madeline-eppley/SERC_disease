@@ -271,7 +271,66 @@ Here are the output products from that code chunk
 > I removed 8 individuals from the data set that had only partial data (missing 1 of polydora, cliona, or dermo data). this isn't a substantial number in the grand scheme of the dataset, and i think it would be more annoying to leave them in and have incomplete data versus keeping them in for the categories that we do have data for them. but if we are committed to keeping all individuals, I can add them back in. our total count of individuals in the dataset right now is 362 :)
 
 
+### visualizations!!
+Now for the exciting stuff - here i'm going to make some basic barplots to get familiarized with the data (improve on the tables above) and then start to address our research questions at the top of the doc (starting with a PCA, Q3). 
 
+```R
+### code chunk 4 ###
+# visualize infections!!!
+infection_counts <- table(all_data$Year, all_data$River, all_data$infection_group)
+layout(matrix(c(1, 2, 3, 4), nrow = 1), widths = c(1, 1, 1, 0.4))
+par(mar = c(5, 4, 4, 1))
+barplot(t(infection_counts[, "Severn", ]), beside = FALSE, col = c("#eff3ff", "#6baed6", "#08519c"),
+        main = "Severn", xlab = "Year", ylab = "Count of Oysters")
+barplot(t(infection_counts[, "South", ]), beside = FALSE, col = c("#eff3ff", "#6baed6", "#08519c"),
+        main = "South", xlab = "Year", ylab = "Count of Oysters")
+barplot(t(infection_counts[, "West", ]), beside = FALSE, col = c("#eff3ff", "#6baed6", "#08519c"),
+        main = "West", xlab = "Year", ylab = "Count of Oysters")
+par(mar = c(0, 0, 0, 0))
+plot.new()
+legend("left", legend = c("Uninfected", "Single", "Co-infected"), 
+       fill = c("#eff3ff", "#6baed6", "#08519c"), bty = "n", cex = 0.9)
+par(mfrow = c(1, 1), mar = c(5, 4, 4, 2))
+```
+
+Here's the product from the barplot code:
+
+<img width="3450" height="1722" alt="image" src="https://github.com/user-attachments/assets/fa5b5b7a-3e68-4c29-996d-23ee0f581011" />
+
+
+```R
+#pca analysis
+# let's include dermo rectum, dermo mantle, polydora outside, cliona, and polydora blister
+pca_matrix <- cbind(all_data$Score_Rectum, all_data$Score_Mantle, 
+                    all_data$Polydora_outside, all_data$Cliona, all_data$Polydora_blister)
+colnames(pca_matrix) <- c("Dermo_Rectum", "Dermo_Mantle", "Polydora", "Cliona", "Blister")
+
+pca_result <- prcomp(pca_matrix, scale. = TRUE, center = TRUE)
+summary(pca_result)
+
+#dev.off()
+# pca by river
+river_colors <- c("Severn" = "#0c2c84", "South" = "#c7e9b4", "West" = "#41b6c4")
+year_shapes <- c("2022" = 16, "2023" = 17, "2024" = 15, "2025" = 18)
+point_shapes <- year_shapes[as.character(all_data$Year)]
+plot(pca_result$x[, 1], pca_result$x[, 2], 
+     col = river_colors[all_data$River], 
+     pch = point_shapes, cex = 1.5,
+     xlab = paste0("PC1 (", round(summary(pca_result)$importance[2,1]*100, 1), "%)"),
+     ylab = paste0("PC2 (", round(summary(pca_result)$importance[2,2]*100, 1), "%)"),
+     main = "")
+legend("topleft", 
+       legend = c("Severn", "South", "West", "2022", "2023", "2024", "2025"), 
+       col = c(river_colors, "black", "black", "black", "black"), 
+       pch = c(16, 16, 16, 16, 17, 15, 18), cex = 0.6)
+```
+
+Here's the product from the PCA code: 
+
+<img width="3060" height="1812" alt="image" src="https://github.com/user-attachments/assets/7bf91b4d-b58f-42ed-8198-8d12e4a426f9" />
+
+> [!NOTE]
+> I'm maybe seeing a little bit of difference in the West river separated out by PC2. There's one outlier looking point from the Severn river in 2022 as well. We should discuss the variables that went into this PCA (e.g., do we want to have both Dermo Rectum AND Dermo Mantle in the PCA? I also have Polydora outside (% of shell covered) AND polydora blisters (# count of total blisters). 
 
 
 
