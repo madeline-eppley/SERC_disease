@@ -329,8 +329,16 @@ Here's the product from the PCA code:
 
 <img width="3060" height="1812" alt="image" src="https://github.com/user-attachments/assets/7bf91b4d-b58f-42ed-8198-8d12e4a426f9" />
 
+#### with 95% confidence ellipses around each river
+
+<img width="2016" height="1362" alt="image" src="https://github.com/user-attachments/assets/2313bffd-6da7-4053-9d82-746595364caa" />
+
+#### with 95% confidence ellipses around each year (across all rivers)
+
+<img width="2016" height="1362" alt="image" src="https://github.com/user-attachments/assets/fec0a180-25de-4b8d-8bd5-3133de93a969" />
+
 > [!NOTE]
-> I'm maybe seeing a little bit of difference in the West river separated out by PC2. There's one outlier looking point from the Severn river in 2022 as well. We should discuss the variables that went into this PCA (e.g., do we want to have both Dermo Rectum AND Dermo Mantle in the PCA? I also have Polydora outside (% of shell covered) AND polydora blisters (# count of total blisters). 
+> I'm maybe seeing a little bit of difference in the West river separated out by PC2, and South river separated out by PC1, and I think the ellipses help show that. There's one outlier looking point from the Severn river in 2022 as well. We should discuss the variables that went into this PCA (e.g., do we want to have both Dermo Rectum AND Dermo Mantle in the PCA? I also have Polydora outside (% of shell covered) AND polydora blisters (# count of total blisters). 
 
 
 ### General takeaways so far
