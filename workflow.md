@@ -175,6 +175,101 @@ Also one weird R syntax thing that I just learned is that if a variable ends wit
 - Now i'm also going to want to combine some columns to make new variables for co-infections (Y/N or sum), infected with dermo only, infected with polydora only, and uninfected.
 - There are also some crazy symbols (e.g., >, ~) in the dataset, so I need to get rid of those with clean_num as as.numeric. 
 
+```R
+### code chunk 3 ###
+# trim any whitespaces around columns (there are some whitespaces, I checked lol)
+all_data$River <- trimws(all_data$River)
+all_data$Specimen_ID <- trimws(all_data$Specimen_ID)
+
+# now get everything into numeric format
+all_data$Length_mm <- as.numeric(as.character(all_data$Length_mm))
+all_data$Score_Rectum <- as.numeric(as.character(all_data$Score_Rectum))
+all_data$Score_Mantle <- as.numeric(as.character(all_data$Score_Mantle))
+all_data$Blister_Count_A <- as.numeric(as.character(all_data$Blister_Count_A))
+all_data$Blister_Count_B <- as.numeric(as.character(all_data$Blister_Count_B))
+
+# a little sanity check with the ranges of our new numeric variables
+range(all_data$Length_mm, na.rm = TRUE)
+quantile(all_data$Score_Rectum, na.rm = TRUE) # just taking a quick peek at the data, looks like rectum is more infected than mantle
+quantile(all_data$Score_Mantle, na.rm = TRUE)
+
+# now average the A and B observer values
+all_data$Polydora_outside <- (all_data$Polydora_Average_A + all_data$Polydora_Average_B) / 2
+all_data$Cliona <- (all_data$Cliona_Avg_A + all_data$Cliona_Avg_B) / 2
+all_data$Polydora_blister <- (all_data$Blister_Count_A + all_data$Blister_Count_B) / 2
+
+# remove the old cols
+all_data <- all_data %>%
+  select(-c(Polydora_LeftValve_A, Polydora_RightValve_A, Polydora_Average_A, Polydora_Average_B,
+            `Polydora_LeftValve_B_%`, `Polydora_RightValve_B_%`,
+            Cliona_LeftValve_A, Cliona_RightValve_A, `Cliona_LeftValve_B_%`, `Cliona_RightValve_B_%`,
+            Blister_Count_A, Blister_Count_B, Count_Rectum, Count_Mantle,
+            Cliona_Avg_A, Cliona_Avg_B, Year_Collected))
+
+# summary checks again
+summary(all_data)
+dim(all_data)
+
+# ok now what i'm noticing is that we have a handful of individuals (anywhere from 1-7 in each col) that still have NAs
+# i think the best way to deal with this data is to remove these individuals
+# katrina should confirm that we want to do this - i don't think they'll be helpful data points down the line
+
+# create the new infection status col
+all_data$dermo_infected <- ifelse(all_data$Score_Rectum > 0, 1, 0)
+all_data$polydora_infected <- ifelse(all_data$Polydora_outside > 0, 1, 0)
+all_data$cliona_infected <- ifelse(all_data$Cliona > 0, 1, 0)
+all_data$n_infections <- all_data$dermo_infected + all_data$polydora_infected + all_data$cliona_infected
+
+# check for inds with NAs
+na_infections <- all_data[is.na(all_data$n_infections), ]
+nrow(na_infections) # only 8 currently - let's just remove those!
+
+# remove those inds
+all_data <- all_data[!is.na(all_data$n_infections), ]
+dim(all_data) # now down to 362 inds, this makes sense, it was 370 minus the 8 we just removed 
+
+# ok now make a variable for our co-infected/uninfected/single infections
+# i think katrina and I should also talk about this, how do we want to document each possible combination of co-infections?
+all_data$infection_group <- ifelse(all_data$n_infections == 0, "Uninfected",
+                                   ifelse(all_data$n_infections == 1, "Single", "Co-infected"))
+all_data$infection_group <- factor(all_data$infection_group, levels = c("Uninfected", "Single", "Co-infected"))
+
+# ok again more summary info
+table(all_data$infection_group) # wow only 1 individual that was completely uninfected! 
+table(all_data$River, all_data$infection_group)
+table(all_data$Year, all_data$infection_group)
+
+# export the shiny new clean data!
+write.csv(all_data, "/Users/madelineeppley/Desktop/marineGEO_oysterdisease/marineGEO_clean2225.csv", row.names = FALSE)
+```
+Here are the output products from that code chunk
+
+```
+> table(all_data$River, all_data$infection_group)
+        
+         Uninfected Single Co-infected
+  Severn          1     32          84
+  South           0     29         101
+  West            0     21          94
+```
+
+```
+> table(all_data$Year, all_data$infection_group)
+      
+       Uninfected Single Co-infected
+  2022          0     19          71
+  2023          0     10          78
+  2024          0     29          70
+  2025          1     24          60
+```
+
+> [!NOTE]
+> Some things to talk about with Katrina: do we like the way that the co-infections are grouped? I think we could get more detailed and categorize by different co-infections (e.g., Dermo-polydora, polydora-cliona, Dermo-cliona) although my instinct from looking at the data is that the vast majority of co-infections will just be Dermo and polydora
+
+
+> [!NOTE]
+> I removed 8 individuals from the data set that had only partial data (missing 1 of polydora, cliona, or dermo data). this isn't a substantial number in the grand scheme of the dataset, and i think it would be more annoying to leave them in and have incomplete data versus keeping them in for the categories that we do have data for them. but if we are committed to keeping all individuals, I can add them back in. our total count of individuals in the dataset right now is 362 :)
+
 
 
 
