@@ -350,4 +350,11 @@ Here's the product from the PCA code:
 > Some questions that I'm thinking of so far: Do we want to call the Dermo “score” intensity? It’s assigned based on the CDE score guide (not sure if I have a copy of this..?). I was also thinking of running the GLMs with the rectum and mantle scores/cell counts separately, do we think this could tell us anything biologically interesting? Essentially, what should I know about the difference between a rectum vs mantle infection of Dermo, and how should we quantify Dermo intensity?
 
 
+Plan for the GLM modeling: 
+
+Q1: How does the relationship between Dermo + bioeroder vary across rivers and over time?
+- bioeroder is presence/absence data (0 or 1 for polydora - need to choose % cover or blisters, probably almost all have an infection, though)
+- or cliona presence (0 or 1 - although most probably don't have cliona infection)
+- Predictor variables = Dermo intensity, river (factor), and year (factor). 
+
 
