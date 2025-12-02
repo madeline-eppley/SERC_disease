@@ -333,4 +333,13 @@ Here's the product from the PCA code:
 > I'm maybe seeing a little bit of difference in the West river separated out by PC2. There's one outlier looking point from the Severn river in 2022 as well. We should discuss the variables that went into this PCA (e.g., do we want to have both Dermo Rectum AND Dermo Mantle in the PCA? I also have Polydora outside (% of shell covered) AND polydora blisters (# count of total blisters). 
 
 
+### General takeaways so far
+1. Mantle was less intensely infected by Dermo than rectum (based on quantiles), so for co-infection calculations we will use rectum data
+2. Co-infection was very prominent across all rivers and all years (Infection group = Dermo rectum score, polydora outside score, cliona score)
+3. No substantial differences between site and year in the PCA either, this includes Dermo rectum, Dermo mantle, polydora outside, polydora blisters (inside), and cliona infections
+
+> [!NOTE]
+> Some questions that I'm thinking of so far: Do we want to call the Dermo “score” intensity? It’s assigned based on the CDE score guide (not sure if I have a copy of this..?). I was also thinking of running the GLMs with the rectum and mantle scores/cell counts separately, do we think this could tell us anything biologically interesting? Essentially, what should I know about the difference between a rectum vs mantle infection of Dermo, and how should we quantify Dermo intensity?
+
+
 
