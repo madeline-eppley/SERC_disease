@@ -472,3 +472,68 @@ average lengths across years and rivers looks really consistent to me.
 <img width="1950" height="1458" alt="image" src="https://github.com/user-attachments/assets/f611493e-70de-4e1c-88a2-2309e17f58b7" />
 
 <img width="1950" height="1458" alt="image" src="https://github.com/user-attachments/assets/fcaba013-82df-4921-86be-a3152968ab3d" />
+
+
+### co-infections across rivers and years
+```
+## create categories for co-infection data
+all_data <- all_data %>%
+  mutate(
+    infection_combo = case_when(
+      dermo_infected == 0 & polydora_infected == 0 & cliona_infected == 0 ~ "None",
+      dermo_infected == 1 & polydora_infected == 0 & cliona_infected == 0 ~ "Dermo only",
+      dermo_infected == 0 & polydora_infected == 1 & cliona_infected == 0 ~ "Polydora only",
+      dermo_infected == 0 & polydora_infected == 0 & cliona_infected == 1 ~ "Cliona only",
+      dermo_infected == 1 & polydora_infected == 1 & cliona_infected == 0 ~ "Dermo + Polydora",
+      dermo_infected == 1 & polydora_infected == 0 & cliona_infected == 1 ~ "Dermo + Cliona",
+      dermo_infected == 0 & polydora_infected == 1 & cliona_infected == 1 ~ "Polydora + Cliona",
+      dermo_infected == 1 & polydora_infected == 1 & cliona_infected == 1 ~ "Dermo + Polydora + Cliona"))
+# now check the distributions
+table(all_data$infection_combo)
+
+# let's make a coinfection summary by river and year
+coinf_summary <- all_data %>%
+  group_by(River, Year, infection_combo) %>%
+  summarise(n = n(), .groups = "drop")
+
+# and now also proportions of each type of coinfection per river and per year
+coinf_prop <- coinf_summary %>%
+  group_by(River, Year) %>%
+  mutate(prop = n / sum(n))
+
+# plot!
+ggplot(coinf_prop, aes(x = factor(Year), y = prop, fill = infection_combo)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ River) +
+  labs(
+    x = "Year",
+    y = "Proportion of samples",
+    fill = "Infections",
+    title = "Co-infection combinations by river and year") +
+  theme_minimal()
+
+## improve the plot
+coinf_colors <- c(
+  "None"                      = "#c6dbef",
+  "Polydora only"             = "#c7e9c0",
+  "Cliona only"               = "#6baed6",
+  #"Dermo only"                = "#c6dbef",
+  "Dermo + Polydora"          = "#08519c",
+  #"Dermo + Cliona"            = "#74c476",
+  "Polydora + Cliona"         = "#74c476",
+  "Dermo + Polydora + Cliona" = "#9ecae1")
+
+ggplot(coinf_prop, aes(x = factor(Year), y = prop, fill = infection_combo)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ River) +
+  scale_fill_manual(values = coinf_colors, drop = FALSE) +
+  labs(
+    x = "Year",
+    y = "Proportion of samples",
+    fill = "Infections",
+    title = "Co-infection combinations by river and year") +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom")
+```
+<img width="2226" height="1332" alt="image" src="https://github.com/user-attachments/assets/995614c5-7f4f-41d7-8048-c5071d1bd08f" />
