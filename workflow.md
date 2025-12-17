@@ -358,3 +358,117 @@ Q1: How does the relationship between Dermo + bioeroder vary across rivers and o
 - Predictor variables = Dermo intensity, river (factor), and year (factor). 
 
 
+## Updates for meeting with Katrina 12/17/25
+#### goals from the prior meeting: understand how different the rectum and mantle scores are, plot the size ranges of the oysters in the data set from each year and river, and break down the co-infections to understand which are the most common combinations 
+
+### 1: compare the rectum and mantle scores
+```
+### now the rectum vs mantle comparisons
+dermo_long <- all_data %>%
+  select(River, Year, Score_Rectum, Score_Mantle) %>%
+  pivot_longer(
+    cols = c(Score_Rectum, Score_Mantle),
+    names_to = "Tissue",
+    values_to = "Dermo_Score") %>%
+  mutate(
+    Tissue = recode(Tissue,
+                    Score_Rectum = "Rectum",
+                    Score_Mantle = "Mantle"))
+
+# box plots for each year and river
+ggplot(dermo_long, aes(x = Tissue, y = Dermo_Score, fill = Tissue)) +
+  geom_boxplot(outlier.alpha = 0.4) +
+  facet_grid(River ~ Year) +
+  labs(
+    x = "",
+    y = "Dermo score",
+    title = "Dermo Score in Rectum vs Mantle") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+# i kind of want to see this visualized as the difference between avg rectum and mantle?
+# i think by subtracting we can get a value that will characterize more infected mantle or rectum.
+all_data <- all_data %>%
+  mutate(
+    dermo_diff = Score_Rectum - Score_Mantle)
+
+summary(all_data$dermo_diff)
+dermo_diff_summary <- all_data %>%
+  group_by(River, Year) %>%
+  summarise(
+    mean_diff = mean(dermo_diff, na.rm = TRUE),
+    sd_diff   = sd(dermo_diff, na.rm = TRUE),
+    n         = n(),
+    .groups = "drop")
+
+# here, values above 0 = rectum score is heavier than mantle score
+## it looks like we have heavier rectum scores than mantle scores, so these are early infections.
+# scores near 0 would be an even infection of rectum & mantle
+# scores below 0 would be a heavier infection of mantle than rectum.
+river_colors <- c(
+  "Severn" = "#6baed6",
+  "South"  = "#0c2c84",
+  "West"   = "#c7e9b4")
+
+ggplot(dermo_diff_summary,
+       aes(x = factor(Year), y = mean_diff,
+           color = River, group = River)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 3) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  scale_color_manual(values = river_colors) +
+  labs(
+    x = "Year",
+    y = "Mean (Rectum − Mantle) Dermo score",
+    title = "Dermo rectum - mantle score") +
+  theme_minimal()
+```
+
+<img width="1950" height="1458" alt="image" src="https://github.com/user-attachments/assets/a44bf1af-c066-4df4-b9cd-8b4b3125a14d" />
+
+
+<img width="1950" height="1458" alt="image" src="https://github.com/user-attachments/assets/33a1a772-aaec-4398-a82a-ea0459868cc8" />
+
+> [!NOTE]
+> here, values above 0 = rectum score is heavier than mantle score, and it looks like we have heavier rectum scores than mantle scores, so these are early infections. scores near 0 would be an even infection of rectum & mantle. scores below 0 would be a heavier infection of mantle than rectum.
+
+
+### 2: compare oyster sizes in the dataset
+```
+## ok last step - now let's make a plot of the oyster sizes
+# use the same river colors nad plot year as each individual panel
+ggplot(all_data, aes(x = Length_mm, fill = River, color = River)) +
+  geom_histogram(
+    bins = 30,
+    alpha = 0.55,
+    position = "identity") +
+  facet_wrap(~ Year) +
+  scale_fill_manual(values = river_colors) +
+  scale_color_manual(values = river_colors) +
+  labs(
+    x = "Shell length (mm)",
+    y = "Count",
+    title = "Oyster shell length distributions") +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom")
+
+# maybe also a box plot that has average shell length
+ggplot(all_data, aes(x = River, y = Length_mm, fill = River)) +
+  geom_boxplot(alpha = 0.75, width = 0.6, outlier.alpha = 0.4) +
+  facet_wrap(~ Year) +
+  scale_fill_manual(values = river_colors) +
+  labs(
+    x = "",
+    y = "Shell length (mm)",
+    title = "Average oyster shell length") +
+  theme_minimal() +
+  theme(
+    legend.position = "none")
+```
+
+average lengths across years and rivers looks really consistent to me. 
+
+<img width="1950" height="1458" alt="image" src="https://github.com/user-attachments/assets/f611493e-70de-4e1c-88a2-2309e17f58b7" />
+
+<img width="1950" height="1458" alt="image" src="https://github.com/user-attachments/assets/fcaba013-82df-4921-86be-a3152968ab3d" />
