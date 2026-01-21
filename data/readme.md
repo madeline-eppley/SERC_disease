@@ -9,3 +9,7 @@
 1. WT7.1 (Severn River): Lat 39.0068, Lon -76.5046 - mesohaline
 2. WT8.1 (South River): Lat 38.9493, Lon -76.5464 - mesohaline
 3. WT8.3 (West River): Lat 38.8501, Lon -76.5330 - mesohaline
+
+#### downloading the environmental data
+I used the [Chesapeake Bay Data Hub](https://datahub.chesapeakebay.net/WaterQuality) and the following parameters to download the raw environmental data on 1/21/2026. 
+<img width="1058" height="588" alt="Screenshot 2026-01-21 at 1 30 38 PM" src="https://github.com/user-attachments/assets/5aa376cb-08de-4260-b4b9-69e1c055fc0d" />
