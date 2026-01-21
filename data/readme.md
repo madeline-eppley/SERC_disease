@@ -12,4 +12,4 @@
 
 #### downloading the environmental data
 I used the [Chesapeake Bay Data Hub](https://datahub.chesapeakebay.net/WaterQuality) and the following parameters to download the raw environmental data on 1/21/2026. 
-<img width="1058" height="588" alt="Screenshot 2026-01-21 at 1 30 38 PM" src="https://github.com/user-attachments/assets/5aa376cb-08de-4260-b4b9-69e1c055fc0d" />
+<img width="1042" height="552" alt="Screenshot 2026-01-21 at 1 42 36 PM" src="https://github.com/user-attachments/assets/26d287e9-87a5-4f8f-929a-7e50e61f70bb" />
