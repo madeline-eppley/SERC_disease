@@ -1,4 +1,4 @@
-# preserving an old version of the analysis from pre-combined file (2022, 2023, and 2024 were separate tabs in the August 2025 version of the datasheet. 
+# preserving an old version of the analysis from pre-combined file (2022, 2023, and 2024 were separate tabs in the August 2025 version of the datasheet). 
 
 ```R
 #### Madeline G Eppley (MGE) data processing for marineGEO oyster disease data
