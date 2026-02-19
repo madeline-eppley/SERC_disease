@@ -1,7 +1,7 @@
 #### MarineGEO environmental data  for Severn, South, and West Rivers ####
 ## Madeline G. Eppley (MGE)
 ## data source: Maryland DNR/Eyes on the Bay - Fixed Station Monthly Monitoring
-## goals: process salinity and temperature variables for ordinal logistic models
+## salinity and temperature variables for ordinal logistic models
 
 library(dplyr)
 library(lubridate)
@@ -124,9 +124,7 @@ for (i in 1:nrow(oyster_collection_dates)) {
                                                collection_date = coll_date,
                                                sal_q10 = quantile(river_data$salinity, 0.10),
                                                sal_q90 = quantile(river_data$salinity, 0.90),
-                                               sal_n = nrow(river_data)))
-  }
-}
+                                               sal_n = nrow(river_data)))}}
 
 temp_quantiles_precollection <- data.frame()
 for (i in 1:nrow(oyster_collection_dates)) {
@@ -147,9 +145,7 @@ for (i in 1:nrow(oyster_collection_dates)) {
                                                 collection_date = coll_date,
                                                 temp_q10 = quantile(river_data$temp, 0.10),
                                                 temp_q90 = quantile(river_data$temp, 0.90),
-                                                temp_n = nrow(river_data)))
-  }
-}
+                                                temp_n = nrow(river_data)))}}
 
 
 env_quantiles_precollection <- sal_quantiles_precollection %>%
@@ -170,10 +166,7 @@ for (yr in 2022:2024) {
                                           sal_q10 = quantile(summer_data$salinity, 0.10),
                                           sal_q90 = quantile(summer_data$salinity, 0.90),
                                           sal_mean = mean(summer_data$salinity),
-                                          sal_n = nrow(summer_data)))
-    }
-  }
-}
+                                          sal_n = nrow(summer_data)))}}}
 
 temp_quantiles_summer <- data.frame()
 for (yr in 2022:2024) {
@@ -190,10 +183,7 @@ for (yr in 2022:2024) {
                                            temp_q10 = quantile(summer_data$temp, 0.10),
                                            temp_q90 = quantile(summer_data$temp, 0.90),
                                            temp_mean = mean(summer_data$temp),
-                                           temp_n = nrow(summer_data)))
-    }
-  }
-}
+                                           temp_n = nrow(summer_data)))}}}
 
 summer_quantiles <- sal_quantiles_summer %>%
   left_join(temp_quantiles_summer, by = c("River", "Year", "season"))
@@ -232,9 +222,7 @@ for (i in 1:nrow(oyster_collection_dates)) {
                                     collection_date = coll_date,
                                     mean_salinity_3mo = mean(env_subset$mean_salinity, na.rm = TRUE),
                                     mean_temp_3mo = mean(env_subset$mean_temp, na.rm = TRUE),
-                                    n_months = nrow(env_subset)))
-  }
-}
+                                    n_months = nrow(env_subset)))}}
 
 env_data_final <- env_quantiles_precollection %>%
   full_join(env_averages_all, by = c("River", "Year", "collection_date"))
